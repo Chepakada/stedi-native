@@ -12,12 +12,20 @@ import { NavigationContainer } from '@react-navigation/native';
 
 
 const AppStack = createNativeStackNavigator();
+const loggedInStates={
+  NOT_LOGGED_IN: "NOT_LOGGED_IN",
+  LOGGED_IN: "LOGGED_IN",
+  CODE_SENT:"CODE_SENT",
+}
 
 const App = () =>{
   const [isFirstLaunch, setFirstLaunch] = React.useState(true);
-  const [isLoggedIn,setIsLoggedIn] = React.useState(false);
+  const [loggedInState,setLoggedInState] = React.useState(loggedInStates.NOT_LOGGED_IN);
   const [homeTodayScore, setHomeTodayScore] = React.useState(0);
   const [phoneNumber, setPhoneNumber]= React.useState("");
+  const [oneTimePassword, setOneTimePassword]= React.useState(null);
+  
+
 
    if (isFirstLaunch == true){
 return(
@@ -43,7 +51,7 @@ return(
         onPress = {async()=>{
           console.log('Button was pressed')
         
-          await fetch('https://dev.stedi.me/twofactorlogin/+phoneNumber',
+          await fetch('https://dev.stedi.me/twofactorlogin/'+phoneNumber,
         {
           method: 'POST',
           headers:{
@@ -81,9 +89,18 @@ return(
               headers:{
                 'content-type':'application/text'
               },
-              body: phoneNumber, oneTimePassword
-            })
-            setLoggedInState(loggedInStates.CODE_SENT)
+              body:JSON.stringify({ 
+                phoneNumber, 
+                oneTimePassword})
+            });
+            if (loginResponse.status==200){
+              setLoggedInState(loggedInStates.LOGGED_IN);
+          } else{
+            setLoggedInState(loggedInStates.NOT_LOGGED_IN);
+          }
+
+           // setLoggedInState(loggedInStates.CODE_SENT)
+            
           }}
         />
       </View>
