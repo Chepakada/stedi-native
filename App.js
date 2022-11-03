@@ -90,8 +90,8 @@ return(
                 'content-type':'application/text'
               },
               body:JSON.stringify({ 
-                phoneNumber, 
-                oneTimePassword})
+                phoneNumber:phoneNumber, 
+                oneTimePassword:oneTimePassword})
             });
             if (loginResponse.status==200){
               setLoggedInState(loggedInStates.LOGGED_IN);
