@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { StyleSheet, Text, SafeAreaView,  View, ScrollView, Linking} from 'react-native';
 import {FontAwesome5} from '@expo/vector-icons';
 import quotes from '../data/quote.json';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Card, CardTitle, CardContent} from 'react-native-material-cards';
 import { LineChart} from 'react-native-chart-kit';
 

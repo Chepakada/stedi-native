@@ -4,6 +4,7 @@ import  Navigation from './components/Navigation';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import OnboardingScreen from './screens/OnboardingScreen';
 import Home from './screens/Home';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 // import { Button, TextInput } from 'react-native-paper';
 
