@@ -1,12 +1,12 @@
 import React, { useEffect, useState, } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, AsyncStorage, Button, TextInput  } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Button, TextInput, Alert  } from 'react-native';
 import  Navigation from './components/Navigation';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import OnboardingScreen from './screens/OnboardingScreen';
 import Home from './screens/Home';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
-// import { Button, TextInput } from 'react-native-paper';
+// import { Button, TextInput } from 'react-native-paper';cd
 
 
 
@@ -25,9 +25,35 @@ const App = () =>{
   const [homeTodayScore, setHomeTodayScore] = React.useState(0);
   const [phoneNumber, setPhoneNumber]= React.useState("");
   const [oneTimePassword, setOneTimePassword]= React.useState(null);
+
+
   
 
 
+
+  useEffect(()=>{
+    const getSessionToken = async()=>{
+      const sessionToken = await AsyncStorage.getItem('sessionToken');
+      console.log('sessionToken', sessionToken);
+      const validateResponse = await fetch('https://dev.stedi.me/validate/'+sessionToken, {
+        method:'GET',
+        headers:{
+          'content-type': 'application/text'
+        }
+
+      });
+      if (validateResponse.status==200){
+        const userName = await validateResponse.text();
+        
+        AsyncStorage.setItem('userName', userName);
+        console.log('userName', userName)
+
+        setLoggedInState(loggedInStates.LOGGED_IN);
+
+      }    }
+      getSessionToken();
+
+  })
    if (isFirstLaunch == true){
 return(
   <OnboardingScreen setFirstLaunch={setFirstLaunch}/>
@@ -95,8 +121,12 @@ return(
                 oneTimePassword:oneTimePassword})
             });
             if (loginResponse.status==200){
+              const sessionToken = await loginResponse.text();
+              await AsyncStorage.setItem('sessionToken', sessionToken);
               setLoggedInState(loggedInStates.LOGGED_IN);
           } else{
+            console.log('response status', loginResponse.status);
+            Alert.alert('Invalid', "Invalid login information");
             setLoggedInState(loggedInStates.NOT_LOGGED_IN);
           }
 
